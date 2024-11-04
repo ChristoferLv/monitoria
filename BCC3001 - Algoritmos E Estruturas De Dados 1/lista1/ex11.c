@@ -72,7 +72,7 @@ char **split(const char *str, int *n)
 
 int main()
 {
-    char str[] = " Texto de teste ";
+    char str[] = "C is a general-purpose programming language, widely used and very influential. By design, C reflects the capabilities of the targeted CPUs, such as types, operations and memory access.";
 
     int size = 0;
     char **tokens = split(str, &size);
