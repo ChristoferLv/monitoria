@@ -105,9 +105,87 @@ int strcmp_plus(const char s1[], const char s2[]) // Ex5
         }
         idx = idx + 1;
     }
-    if(str1Tam > str2Tam){
+    if (str1Tam > str2Tam)
+    {
         return -1;
-    }else if(str1Tam < str2Tam){
+    }
+    else if (str1Tam < str2Tam)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int count_words_plus(const char str[]) // Ex6
+{
+    size_t strTam = strlen(str);
+    size_t numPalavras = 0;
+    if (str[0] != ' ')
+    {
+        numPalavras = numPalavras + 1;
+        if (strTam == 1)
+            return 1;
+    }
+    for (size_t i = 1; i < strTam; i++)
+    {
+        if (str[i] != ' ' && str[i - 1] == ' ')
+        {
+            numPalavras = numPalavras + 1;
+        }
+    }
+    return numPalavras;
+}
+
+void string_capitalize(char str[]) // Ex7
+{
+    size_t strTam = strlen(str);
+    size_t numPalavras = 0;
+    if (str[0] >= 'a' && str[0] <= 'z')
+    {
+        str[0] = str[0] - 32;
+    }
+    for (size_t i = 1; i < strTam; i++)
+    {
+        if (str[i - 1] == ' ')
+        {
+            if (str[i] >= 'a' && str[i] <= 'z')
+            {
+                str[i] = str[i] - 32;
+            }
+        }
+        else
+        {
+            if (str[i] >= 'A' && str[i] <= 'Z')
+            {
+                str[i] = str[i] + 32;
+            }
+        }
+    }
+}
+
+int string_compare(const char str1[], const char str2[]) //Ex8
+{
+    size_t str1Tam = strlen(str1);
+    size_t str2Tam = strlen(str2);
+    size_t idx = 0;
+    while (idx <= str1Tam && idx <= str2Tam)
+    {
+        if (str1[idx] < str2[idx])
+        {
+            return -1;
+        }
+        else if (str1[idx] > str2[idx])
+        {
+            return 1;
+        }
+        idx = idx + 1;
+    }
+    if (str1Tam > str2Tam)
+    {
+        return -1;
+    }
+    else if (str1Tam < str2Tam)
+    {
         return 1;
     }
     return 0;
@@ -128,9 +206,18 @@ int main()
     printf("%s", texto);
     printf("\n");
 
-    char textoParaCmp1[] = "aabcde";
-    char textoParaCmp2[] = "aabcde";
+    char textoParaCmp1[] = "aAbcde";
+    char textoParaCmp2[] = "aAbcdE";
     printf("%d\n", strcmp_plus(textoParaCmp1, textoParaCmp2));
+
+    char s[] = " first things first,  second   things   latter   ";
+    printf("%d\n", count_words_plus(s)); // saída: 6
+
+    char s2[] = "welCOME To COMPUTER programming !!";
+    string_capitalize(s2);
+    printf("%s\n", s2); // saída: Welcome To Computer Programming!!
+
+    printf("%d\n", string_compare(textoParaCmp1, textoParaCmp2));
 
     return 0;
 }
