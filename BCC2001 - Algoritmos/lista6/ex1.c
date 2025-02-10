@@ -163,7 +163,7 @@ void string_capitalize(char str[]) // Ex7
     }
 }
 
-int string_compare(const char str1[], const char str2[]) //Ex8
+int string_compare(const char str1[], const char str2[]) // Ex8
 {
     size_t str1Tam = strlen(str1);
     size_t str2Tam = strlen(str2);
@@ -187,6 +187,79 @@ int string_compare(const char str1[], const char str2[]) //Ex8
     else if (str1Tam < str2Tam)
     {
         return 1;
+    }
+    return 0;
+}
+
+void string_count(const char str[]) // Ex9
+{
+    char ocorrencias[26] = {0};
+    size_t strSize = strlen(str);
+    for (size_t i = 0; i < strSize; i++)
+    {
+        if (str[i] >= 'a' && str[i] <= 'z')
+        {
+            ocorrencias[str[i] - 'a'] = ocorrencias[str[i] - 'a'] + 1;
+        }
+        else if (str[i] >= 'A' && str[i] <= 'Z')
+        {
+            ocorrencias[str[i] - 'A'] = ocorrencias[str[i] - 'A'] + 1;
+        }
+    }
+
+    for (size_t i = 0; i < 26; i++)
+    {
+        if (ocorrencias[i] != 0)
+        {
+            printf("%c: %d - %d%% | ", (char)('A' + i), ocorrencias[i], ocorrencias[i] * 100 / 26);
+        }
+    }
+    printf("\n");
+}
+
+void string_trim(char str[]) // Ex10
+{
+    size_t strSize = strlen(str);
+    size_t spacesCount = 0;
+    for (int i = strSize - 1; i >= 0; i--)
+    {
+        if (str[i] != ' ')
+        {
+            str[i + 1] = '\0';
+            break;
+        }
+    }
+
+    while (spacesCount < strSize && str[spacesCount] == ' ')
+    {
+        spacesCount = spacesCount + 1;
+    }
+
+    strSize = strlen(str);
+
+    if (spacesCount > 0)
+    {
+        for (size_t i = 0; i < strSize - spacesCount + 1; i++)
+        {
+            str[i] = str[i + spacesCount];
+        }
+    }
+}
+
+int find_substring(const char str[], const char sub[]) // Ex11
+{
+    size_t idx = 0;
+    size_t strSize = strlen(str);
+    for (size_t i = 0; i < strSize; i++)
+    {
+        if(str[i] == sub[idx]){
+            idx = idx + 1;
+            if(sub[idx] == '\0'){
+                return 1;
+            }
+        }else{
+            idx = 0;
+        }
     }
     return 0;
 }
@@ -219,5 +292,15 @@ int main()
 
     printf("%d\n", string_compare(textoParaCmp1, textoParaCmp2));
 
+    char s3[] = "Hello World of Software Development";
+    string_count(s3);
+
+    char s4[] = "   hello world   ";
+    string_trim(s4);
+    printf("|%s|\n", s4); // saída: “hello world”
+
+    char s5[] = "first things first, second things latter";
+    int check = find_substring(s5, "second");
+    printf("%d", check);
     return 0;
 }
