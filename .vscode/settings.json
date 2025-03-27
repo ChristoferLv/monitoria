@@ -43,6 +43,7 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "sstream": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "stdio.h": "c"
     }
 }
