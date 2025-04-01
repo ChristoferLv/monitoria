@@ -139,7 +139,6 @@ int count_words_plus(const char str[]) // Ex6
 void string_capitalize(char str[]) // Ex7
 {
     size_t strTam = strlen(str);
-    size_t numPalavras = 0;
     if (str[0] >= 'a' && str[0] <= 'z')
     {
         str[0] = str[0] - 32;
@@ -252,16 +251,67 @@ int find_substring(const char str[], const char sub[]) // Ex11
     size_t strSize = strlen(str);
     for (size_t i = 0; i < strSize; i++)
     {
-        if(str[i] == sub[idx]){
+        if (str[i] == sub[idx])
+        {
             idx = idx + 1;
-            if(sub[idx] == '\0'){
+            if (sub[idx] == '\0')
+            {
                 return 1;
             }
-        }else{
+        }
+        else
+        {
             idx = 0;
         }
     }
     return 0;
+}
+
+void cut_string(char str[], const char word[]) // Ex12
+{
+    size_t idx = 0;
+    size_t strSize = strlen(str);
+    for (size_t i = 0; i < strSize; i++)
+    {
+        if (str[i] == word[idx])
+        {
+            idx = idx + 1;
+            if (word[idx] == '\0')
+            {
+                for (size_t j = i + 1; j < strSize; j++)
+                {
+                    str[j] = '\0';
+                }
+                return;
+            }
+        }
+        else
+        {
+            idx = 0;
+        }
+    }
+    return;
+}
+
+void int_to_string(int number, char converted[])
+{
+    size_t idx = 0;
+    size_t remainder = 0;
+    if (number == 0)
+    {
+        converted[idx] = '0';
+        idx = idx + 1;
+        converted[idx] = '\0';
+    }
+    while (number != 0)
+    {
+        remainder = number % 10;
+        converted[idx] = '0' + remainder;
+        idx = idx + 1;
+        number = number / 10;
+    }
+    converted[idx] = '\0';
+    
 }
 
 int main()
@@ -301,6 +351,15 @@ int main()
 
     char s5[] = "first things first, second things latter";
     int check = find_substring(s5, "second");
-    printf("%d", check);
+    printf("%d\n", check);
+
+    char s6[] = "first things first, second things latter";
+    cut_string(s6, "second");
+    printf("%s\n", s6); // s = “first things first, second”
+
+    char num[11];
+    int_to_string(512, num);
+    printf("%s", num); // saída: “512” (string)
+
     return 0;
 }
