@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 int strTam(char str[]) // Utilizada para o Ex2_2
 {
@@ -293,7 +294,7 @@ void cut_string(char str[], const char word[]) // Ex12
     return;
 }
 
-void int_to_string(int number, char converted[])
+void int_to_string(int number, char converted[]) // Ex13
 {
     size_t idx = 0;
     size_t remainder = 0;
@@ -311,7 +312,27 @@ void int_to_string(int number, char converted[])
         number = number / 10;
     }
     converted[idx] = '\0';
-    
+    int temp = 0;
+    for (int i = 0; i < idx / 2; i++)
+    {
+        temp = converted[i];
+        converted[i] = converted[idx - 1 - i];
+        converted[idx - 1 - i] = temp;
+    }
+}
+
+int string_to_int(const char number_str[]) // Ex14
+{
+    size_t tam = strlen(number_str);
+    size_t result = 0;
+    size_t power = round(pow(10,tam-1));
+    for (size_t i = 0; i < tam; i++)
+    {
+        result = result + (number_str[i] - '0') * power;
+        power = power / 10;
+    }
+
+    return result;
 }
 
 int main()
@@ -358,8 +379,10 @@ int main()
     printf("%s\n", s6); // s = “first things first, second”
 
     char num[11];
-    int_to_string(512, num);
-    printf("%s", num); // saída: “512” (string)
+    int_to_string(123456, num);
+    printf("%s\n", num); // saída: “512” (string)
 
+    int n = string_to_int("22343030"); // n = 1024
+    printf("%d", n);
     return 0;
 }
