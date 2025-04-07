@@ -117,7 +117,7 @@ void put_totals(int rows, int cols, int m[rows][cols]) // Ex8
     }
 }
 
-int matrix_equals(int r1, int c1, int m1[r1][c1], int r2, int c2, int m2[r2][c2])
+int matrix_equals(int r1, int c1, int m1[r1][c1], int r2, int c2, int m2[r2][c2]) // Ex9
 {
     if (r1 != r2 || c1 != c2)
     {
@@ -137,7 +137,7 @@ int matrix_equals(int r1, int c1, int m1[r1][c1], int r2, int c2, int m2[r2][c2]
     return 1;
 }
 
-void sum(int rows, int cols, int m1[rows][cols], int m2[rows][cols],
+void sum(int rows, int cols, int m1[rows][cols], int m2[rows][cols], // Ex10
          int m3[rows][cols])
 {
     for (size_t i = 0; i < rows; i++)
@@ -149,7 +149,7 @@ void sum(int rows, int cols, int m1[rows][cols], int m2[rows][cols],
     }
 }
 
-void transpose(int r1, int c1, int m1[r1][c1], int r2, int c2, int m2[r2][c2])
+void transpose(int r1, int c1, int m1[r1][c1], int r2, int c2, int m2[r2][c2]) // Ex11
 {
     for (size_t i = 0; i < r1; i++)
     {
@@ -160,7 +160,7 @@ void transpose(int r1, int c1, int m1[r1][c1], int r2, int c2, int m2[r2][c2])
     }
 }
 
-void switch_diagonals(int d, int m1[d][d])
+void switch_diagonals(int d, int m1[d][d]) // Ex12
 {
     int temp = 0;
     for (size_t i = 0; i < d; i++)
@@ -171,7 +171,7 @@ void switch_diagonals(int d, int m1[d][d])
     }
 }
 
-void pascal_triangle(int n)
+void pascal_triangle(int n) // Ex13
 {
     int pasc[n][n + 1];
     init_values(n, n + 1, pasc, 0, 0);
@@ -186,7 +186,7 @@ void pascal_triangle(int n)
     print_matrix(n, n + 1, pasc);
 }
 
-int check_upper_triangle(int d, int m[d][d])
+int check_upper_triangle(int d, int m[d][d]) // Ex14
 {
     for (size_t i = 1; i < d; i++)
     {
@@ -200,7 +200,35 @@ int check_upper_triangle(int d, int m[d][d])
     }
     return 1;
 }
-int check_symmetric(int d, int m[d][d])
+
+int check_identity(int rows, int cols, int m[rows][cols]) // Ex15
+{
+    for (size_t i = 0; i < rows; i++)
+    {
+        for (size_t j = i; j < cols; j++)
+        {
+            if (i == j)
+            {
+                if (m[i][j] != 1)
+                {
+                    return 0;
+                }
+                continue;
+            }
+            if (m[i][j] != 0)
+            {
+                return 0;
+            }
+            if (m[j][i] != 0)
+            {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+int check_symmetric(int d, int m[d][d]) // Ex16
 {
     for (size_t i = 0; i < d; i++)
     {
@@ -215,23 +243,111 @@ int check_symmetric(int d, int m[d][d])
     return 1;
 }
 
-void print_strings(int n, int len, char list[n][len])
+void print_strings(int n, int len, char list[n][len]) // Ex17
 {
     for (int i = 0; i < n; i++)
     {
         printf("%s - ", list[i]);
     }
+    printf("\n");
 }
 
-void print_strings_minmax(int n, int len, char list[n][len]){
+void print_strings_minmax(int n, int len, char list[n][len]) // Ex18
+{
     int maior = INT_MIN;
     int menor = INT_MAX;
     int temp = 0;
     for (size_t i = 0; i < n; i++)
     {
-        
+        temp = strlen(list[i]);
+        if (temp > maior)
+        {
+            maior = temp;
+        }
+        if (temp < menor)
+        {
+            menor = temp;
+        }
     }
-    
+    printf("Menor: ");
+    for (size_t i = 0; i < n; i++)
+    {
+        if (strlen(list[i]) == menor)
+        {
+            printf("%s, ", list[i]);
+        }
+    }
+    printf("\n");
+    printf("Maior: ");
+    for (size_t i = 0; i < n; i++)
+    {
+        if (strlen(list[i]) == maior)
+        {
+            printf("%s, ", list[i]);
+        }
+    }
+    printf("\n");
+}
+
+int count_words_plus(const char str[]) // Ex19-sup
+{
+    size_t strTam = strlen(str);
+    size_t numPalavras = 0;
+    if (str[0] != ' ')
+    {
+        numPalavras = numPalavras + 1;
+        if (strTam == 1)
+            return 1;
+    }
+    for (size_t i = 1; i < strTam; i++)
+    {
+        if (str[i] != ' ' && str[i - 1] == ' ')
+        {
+            numPalavras = numPalavras + 1;
+        }
+    }
+    return numPalavras;
+}
+
+int count_words(int n, int len, char lines[n][len]) // Ex19
+{
+    int words = 0;
+    for (size_t i = 0; i < n; i++)
+    {
+        words = words + count_words_plus(lines[i]);
+    }
+    return words;
+}
+int numOccurrences(const char str[], const char sub[]) // Ex20-sup
+{
+    size_t occurrences = 0;
+    size_t idx = 0;
+    size_t strSize = strlen(str);
+    for (size_t i = 0; i < strSize; i++)
+    {
+        if (str[i] == sub[idx])
+        {
+            idx = idx + 1;
+            if (sub[idx] == '\0')
+            {
+                occurrences = occurrences + 1;
+            }
+        }
+        else
+        {
+            idx = 0;
+        }
+    }
+    return occurrences;
+}
+int count_occurrences(int n, int len, char lines[n][len], char word[]) // Ex20
+{
+    int occurrences = 0;
+    for (size_t i = 0; i < n; i++)
+    {
+        occurrences = occurrences + numOccurrences(lines[i], word);
+    }
+    return occurrences;
 }
 int main()
 {
@@ -311,15 +427,51 @@ int main()
     int triangle = 0;
     triangle = check_upper_triangle(4, mat9);
     printf("UP triangle? %d\n", triangle);
-    int mat10[4][4] = {
+    int mat10[3][3] = {
+        {1, 0, 0},
+        {0, 1, 0},
+        {0, 0, 1}};
+    int ident = 0;
+    ident = check_identity(3, 3, mat10);
+    printf("Identity? %d\n", ident);
+    int mat11[4][4] = {
         {1, 2, 3, 4},
         {2, 5, 6, 7},
         {3, 6, 9, 11},
         {4, 7, 11, 0}};
     int syme = 0;
-    syme = check_symmetric(4, mat10);
+    syme = check_symmetric(4, mat11);
     printf("Symetric? %d\n", syme);
     char v3[6][20] = {"John", "Mary", "Jake", "Finn", "Ada", "Michael"};
     print_strings(6, 20, v3);
+    char v4[6][20] = {"Joh", "Mariane", "Jak", "Samuel", "Ada", "Michelangelo"};
+    print_strings_minmax(6, 20, v4);
+    char v5[2][200] = {
+        " Computer programming is the process of designing and building an "
+        "executable computer program for accomplishing a specific computing task.",
+        " Programming involves tasks such as analysis, generating algorithms, "
+        "profiling algorithms accuracy and resource consumption, and the "
+        "implementation of algorithms in a chosen programming language."};
+    int count = count_words(2, 200, v5);
+    printf("Numero de palavras: %d\n", count);
+    char v6[5][200] = {
+        "computer programming is the process of designing and building an "
+        "executable computer program for accomplishing a specific computing task.",
+
+        "programming involves tasks such as analysis, generating algorithms, "
+        "profiling algorithms accuracy and resource consumption, and the "
+        "implementation of algorithms in a chosen programming language.",
+
+        "the source code of a program is written in one or more programming "
+        "languages.",
+
+        "the purpose of programming is to find a sequence of instructions that "
+        "will automate the performance of a task for solving a given problem.",
+
+        "the process of programming thus often requires expertise in several "
+        "different subjects, including knowledge of the application domain, "
+        "specialized algorithms, and formal logic."};
+    int count2 = count_occurrences(5, 200, v6, "programming");
+    printf("Numero de ocorrencias: %d\n", count2);
     return 0;
 }
