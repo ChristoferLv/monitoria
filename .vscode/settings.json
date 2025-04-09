@@ -45,6 +45,7 @@
         "sstream": "c",
         "algorithm": "c",
         "stdio.h": "c",
-        "functional": "c"
+        "functional": "c",
+        "string.h": "c"
     }
 }

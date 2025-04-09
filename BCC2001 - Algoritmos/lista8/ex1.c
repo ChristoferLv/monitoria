@@ -158,56 +158,50 @@ void income_report(int n, Employee v[n])
 //============================================================================ // Ex10
 void removeSpecial(char text[])
 {
-    size_t textSize = strlen(text);
-    for (size_t i = 0; i < textSize; i++)
+    size_t i, j = 0;
+    for (i = 0; text[i] != '\0'; i++)
     {
-        if (!((text[i] >= 'a' && text[i] <= 'z') || (text[i] >= 'A' && text[i] <= 'Z')))
+        if (((text[i] >= 'a' && text[i] <= 'z') || (text[i] >= 'A' && text[i] <= 'Z')) || text[i] == ' ')
         {
-            text[i] = ' ';
+            text[j++] = text[i];
         }
     }
+    text[j] = '\0';
 }
 
 void removeInterSpaces(char text[])
-{
-    size_t textTam = strlen(text);
-    size_t totalMoves = 0;
-    size_t indexSpace = 0;
-    for (size_t i = 0; i < textTam + 1; i++)
+{ //"Um      texto     ."
+    size_t tam = strlen(text);
+    char temp[tam + 1];
+    size_t tempIndex = 0;
+    size_t space = 0;
+    for (size_t i = 0; i < tam; i++)
     {
-        if (indexSpace && text[i] == ' ')
+        if (text[i] == ' ' && space)
         {
-            totalMoves = totalMoves + 1;
+            continue;
         }
         else if (text[i] == ' ')
         {
-            indexSpace = i;
+            space = 1;
+            temp[tempIndex] = ' ';
+            tempIndex++;
         }
-        else if (indexSpace)
+        else
         {
-            if (indexSpace == i)
-            {
-                continue;
-            }
-            for (size_t j = i - totalMoves; j < i; j++)
-            {
-                if (text[j + totalMoves] == '\0')
-                {
-                    text[j - 1] = text[j + totalMoves];
-                    return;
-                }
-                text[j] = text[j + totalMoves];
-            }
-            for (size_t j = i; j < i + totalMoves; j++)
-            {
-                text[j] = ' ';
-            }
-            i = indexSpace + totalMoves;
-            indexSpace = 0;
-            totalMoves = 0;
+            space = 0;
+            temp[tempIndex] = text[i];
+            tempIndex++;
         }
     }
+    // copia de volta para text
+    for (size_t i = 0; (temp[i] != '\0'); i++)
+    {
+        text[i] = temp[i];
+    }
+    text[tempIndex] = '\0';
 }
+
 void string_trim(char str[])
 {
     size_t strSize = strlen(str);
@@ -264,39 +258,45 @@ void string_capitalize(char str[])
 }
 void fix_name(char name[]) // Ex10
 {
+    // printf("|%s|\n", name);
     removeSpecial(name);
-    printf("|%s|\n", name);
+    // printf("|%s|\n", name);
     string_trim(name);
-    printf("|%s|\n", name);
+    // printf("|%s|\n", name);
     removeInterSpaces(name);
-    printf("|%s|\n", name);
+    // printf("|%s|\n", name);
     string_capitalize(name);
-    printf("|%s|\n", name);
+    // printf("|%s|\n", name);
 }
 //============================================================================ // Ex10
-void createEmail(Contact *cont, char name[]) {
+void createEmail(char email[], char name[])
+{
     size_t tam = strlen(name);
-    for (size_t i = 0; i < tam; i++) {
-        if (name[i] == ' ') {
-            cont->email[i] = '.'; // Usando '->' para acessar o campo do ponteiro
-        } else {
-            cont->email[i] = name[i];
+    size_t i;
+    for (i = 0; i < tam; i++)
+    {
+        if (name[i] == ' ')
+        {
+            email[i] = '.'; // Usando '->' para acessar o campo do ponteiro
+        }
+        else
+        {
+            email[i] = name[i];
         }
     }
-    cont->email[tam] = '\0'; // Finaliza a string
-    strcat(cont->email, "@mail.br");
+    email[i] = '\0'; // Finaliza a string
+    strcat(email, "@mail.br");
 }
 
 Contact create_contact(int id, char name[], int type) // Ex11
 {
+    printf("------EX11-----\n");
     Contact newContact;
     newContact.id = id;
     newContact.type = type;
-    printf("%s", name);
-    fix_name(name);
-    printf("AQUI");
     strcpy(newContact.name, name);
-    createEmail(&newContact, name);
+    fix_name(newContact.name);
+    createEmail(newContact.email, newContact.name);
     return newContact;
 }
 
@@ -345,9 +345,9 @@ int main()
 
     char name[] = " JoHn! Do5e3 SILVA";
     fix_name(name);
-    printf("|%s|\n", name);
+    printf("Ex10|%s|\n", name);
 
-    //Contact c2 = create_contact(4, " JoHn! Do5e3 SILVA", 1);
-   // printf("\n%d", c2.type);
+    Contact c2 = create_contact(4, " JoHn! Do5e3 SILVA", 1);
+    printf("Created Contact: %d, %s, %s, %d", c2.id, c2.name, c2.email, c2.type);
     return 0;
 }
