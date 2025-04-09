@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 struct point
 {
@@ -27,7 +28,7 @@ struct employee
 };
 typedef struct employee Employee;
 
-float print_point(Point p) // Ex1
+void print_point(Point p) // Ex1
 {
     printf("(%.2f,%.2f)\n", p.x, p.y);
 }
@@ -62,7 +63,6 @@ void nearest_points(int n, Point v[]) // Ex5
     Point ponto1;
     Point ponto2;
     float dist = INT_MAX;
-    float temp = 0;
     for (size_t i = 0; i < n; i++)
     {
         for (size_t j = 0; j < n; j++)
@@ -115,7 +115,7 @@ void print_best3(int n, Employee v[n]) // Ex8
             best2 = best1;
             best1 = i;
             continue;
-                }
+        }
         if (v[i].salary > v[best2].salary)
         {
             best3 = best2;
@@ -127,7 +127,177 @@ void print_best3(int n, Employee v[n]) // Ex8
             best3 = i;
         }
     }
-    printf("1: %s, 2: %s, 3: %s", v[best1].name, v[best2].name, v[best3].name);
+    printf("1: %s, 2: %s, 3: %s\n", v[best1].name, v[best2].name, v[best3].name);
+}
+
+void income_report(int n, Employee v[n])
+{
+    char types[][50] = {"Developer", "Designer", "Manager"};
+    float total = 0;
+    float temp = 0;
+    size_t qtd = 0;
+    for (size_t i = 0; i < 3; i++)
+    {
+        printf("%s\n", types[i]);
+        for (size_t j = 0; j < n; j++)
+        {
+            if (v[j].type == i)
+            {
+                temp = temp + v[j].salary;
+                qtd++;
+            }
+        }
+        printf("    Média: %.2f\n", (temp / qtd));
+        total = total + temp;
+        temp = 0;
+        qtd = 0;
+    }
+    printf("Total: %.2f, Média Geral: %.2f\n", total, (total / n));
+}
+
+//============================================================================ // Ex10
+void removeSpecial(char text[])
+{
+    size_t textSize = strlen(text);
+    for (size_t i = 0; i < textSize; i++)
+    {
+        if (!((text[i] >= 'a' && text[i] <= 'z') || (text[i] >= 'A' && text[i] <= 'Z')))
+        {
+            text[i] = ' ';
+        }
+    }
+}
+
+void removeInterSpaces(char text[])
+{
+    size_t textTam = strlen(text);
+    size_t totalMoves = 0;
+    size_t indexSpace = 0;
+    for (size_t i = 0; i < textTam + 1; i++)
+    {
+        if (indexSpace && text[i] == ' ')
+        {
+            totalMoves = totalMoves + 1;
+        }
+        else if (text[i] == ' ')
+        {
+            indexSpace = i;
+        }
+        else if (indexSpace)
+        {
+            if (indexSpace == i)
+            {
+                continue;
+            }
+            for (size_t j = i - totalMoves; j < i; j++)
+            {
+                if (text[j + totalMoves] == '\0')
+                {
+                    text[j - 1] = text[j + totalMoves];
+                    return;
+                }
+                text[j] = text[j + totalMoves];
+            }
+            for (size_t j = i; j < i + totalMoves; j++)
+            {
+                text[j] = ' ';
+            }
+            i = indexSpace + totalMoves;
+            indexSpace = 0;
+            totalMoves = 0;
+        }
+    }
+}
+void string_trim(char str[])
+{
+    size_t strSize = strlen(str);
+    size_t spacesCount = 0;
+    for (int i = strSize - 1; i >= 0; i--)
+    {
+        if (str[i] != ' ')
+        {
+            str[i + 1] = '\0';
+            break;
+        }
+    }
+
+    while (spacesCount < strSize && str[spacesCount] == ' ')
+    {
+        spacesCount = spacesCount + 1;
+    }
+
+    strSize = strlen(str);
+
+    if (spacesCount > 0)
+    {
+        for (size_t i = 0; i < strSize - spacesCount + 1; i++)
+        {
+            str[i] = str[i + spacesCount];
+        }
+    }
+}
+
+void string_capitalize(char str[])
+{
+    size_t strTam = strlen(str);
+    if (str[0] >= 'a' && str[0] <= 'z')
+    {
+        str[0] = str[0] - 32;
+    }
+    for (size_t i = 1; i < strTam; i++)
+    {
+        if (str[i - 1] == ' ')
+        {
+            if (str[i] >= 'a' && str[i] <= 'z')
+            {
+                str[i] = str[i] - 32;
+            }
+        }
+        else
+        {
+            if (str[i] >= 'A' && str[i] <= 'Z')
+            {
+                str[i] = str[i] + 32;
+            }
+        }
+    }
+}
+void fix_name(char name[]) // Ex10
+{
+    removeSpecial(name);
+    printf("|%s|\n", name);
+    string_trim(name);
+    printf("|%s|\n", name);
+    removeInterSpaces(name);
+    printf("|%s|\n", name);
+    string_capitalize(name);
+    printf("|%s|\n", name);
+}
+//============================================================================ // Ex10
+void createEmail(Contact *cont, char name[]) {
+    size_t tam = strlen(name);
+    for (size_t i = 0; i < tam; i++) {
+        if (name[i] == ' ') {
+            cont->email[i] = '.'; // Usando '->' para acessar o campo do ponteiro
+        } else {
+            cont->email[i] = name[i];
+        }
+    }
+    cont->email[tam] = '\0'; // Finaliza a string
+    strcat(cont->email, "@mail.br");
+}
+
+Contact create_contact(int id, char name[], int type) // Ex11
+{
+    Contact newContact;
+    newContact.id = id;
+    newContact.type = type;
+    printf("%s", name);
+    fix_name(name);
+    printf("AQUI");
+    strcpy(newContact.name, name);
+    createEmail(&newContact, name);
+    return newContact;
 }
 
 int main()
@@ -146,13 +316,13 @@ int main()
     Point points2[3];
     random_points(3, points2);
     print_point(points2[2]);
+
     nearest_points(4, points);
 
     char types[5][50] = {"Família", "Amigos", "Trabalho", "Escola", "Outros"};
     Contact c = {1, "John Doe", "john.doe@email.com", 2};
     print_contact(c, 5, types);
 
-    char types2[][50] = {"Família", "Amigo", "Trabalho", "Escola", "Outros"};
     Contact list[] = {
         {1, "Marcus Fenix", "fenix@gow.com", 2},
         {41, "Blue Mary", "mary@ff3snk.net", 0},
@@ -163,12 +333,21 @@ int main()
     print_contact_list(6, list, 5, types);
 
     Employee list2[] = {
-        {"Marcus Fenix", 2200.22, 2},
-        {"Blue Mary", 1800.32, 0},
-        {"Barry Burton", 4783.15, 0},
+        {"Marcus Fenix", 2200.22, 0},
+        {"Blue Mary", 1800.32, 1},
+        {"Barry Burton", 4783.15, 2},
         {"Charlie Nash", 7689.10, 2},
-        {"Ada Wong", 2343.67, 4},
+        {"Ada Wong", 2343.67, 1},
         {"Chris Redfield", 12345.67, 0}};
     print_best3(6, list2);
+
+    income_report(6, list2);
+
+    char name[] = " JoHn! Do5e3 SILVA";
+    fix_name(name);
+    printf("|%s|\n", name);
+
+    //Contact c2 = create_contact(4, " JoHn! Do5e3 SILVA", 1);
+   // printf("\n%d", c2.type);
     return 0;
 }
