@@ -107,7 +107,7 @@ int get_hamming_distance(const char *str1, const char *str2) // Ex8
     return dist;
 }
 
-char *find_most_similar(const char *str, int n, char list[n][50])
+char *find_most_similar(const char *str, int n, char list[n][50]) // Ex9
 {
     size_t most = INT_MAX;
     size_t pos = 0;
@@ -124,7 +124,7 @@ char *find_most_similar(const char *str, int n, char list[n][50])
     return list[pos];
 }
 
-void print_board(Rect *board)
+void print_board(Rect *board) // Ex10
 {
     for (size_t i = 0; i < board->y; i++)
     {
@@ -145,7 +145,7 @@ void print_board(Rect *board)
     printf("\n");
 }
 
-void print_board2(Point *point, Rect *board)
+void print_board2(Point *point, Rect *board) // Ex11
 {
     for (size_t i = 0; i < board->y; i++)
     {
@@ -173,7 +173,7 @@ void print_board2(Point *point, Rect *board)
     printf("\n");
 }
 
-void print_board3(Point points[], size_t size, Rect *board)
+void print_board3(Point points[], size_t size, Rect *board) // Ex12
 {
     char buffer[board->height][board->width];
     for (size_t i = 0; i < board->height; i++)
