@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <limits.h>
 
 void print_vector(int n, const int *v) // Suporte
 {
@@ -230,8 +231,44 @@ int **transpose(int m, int n, int v[m][n])
     return newMat;
 }
 
-char** split(const char* str, int* n){
-    
+char **split(const char *str, int *n)
+{
+    size_t idx = 0;
+    size_t numWords = 0;
+    size_t realStart = 0;
+    size_t wordStart = INT_MAX;
+    size_t wordEnd = 0;
+    bool space = false;
+
+    char *palavras[10];
+    size_t idxPalavra = 0;
+    while (str[idx] == ' ')
+    {
+        idx = idx + 1;
+        space = true;
+    }
+    while (str[idx] != '\0')
+    {
+        if (!space && str[idx] == ' ')
+        {
+            wordEnd = idx;
+            idx = idx + 1;
+            space = true;
+        }
+        if (space && str[idx] != ' ')
+        {
+            wordStart = idx;
+            space = false;
+        }
+        if (wordEnd > wordStart)
+        {
+            char *newWord = malloc((wordEnd - wordStart) * sizeof(char));
+            palavras[idxPalavra] = newWord;
+            idxPalavra = idxPalavra + 1;
+            wordStart = INT_MAX;
+        }
+    }
+    return palavras;
 }
 
 int main()
@@ -289,5 +326,15 @@ int main()
     int **vtransposta = transpose(3, 4, v);
     print_vector2D(4, 3, vtransposta);
     free(vtransposta);
+
+    char str[] = " Texto de teste com várias palavras ";
+    int size = 0;
+    char **tokens = split(str, &size); // devolve vetor de strings com as palavras
+    for (int i = 0; i < size; i++)
+        printf("%s\n", tokens[i]); // imprime as palavras encontradas
+    // libera vetor de strings alocado na heap
+    for (int i = 0; i < size; i++)
+        free(tokens[i]);
+    free(tokens);
     return 0;
 }
