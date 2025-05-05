@@ -36,6 +36,7 @@ public:
     LinkedList* deep_copy(); // Ex14
     LinkedList* concat(LinkedList* list2); // Ex15
     LinkedList* merge(LinkedList* list2); // Ex16
+    LinkedList* mergePointerToPointer(LinkedList* list2); // Ex16
 
     bool push_front(int key);
 };

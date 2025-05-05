@@ -80,11 +80,34 @@ int main()
     list1->remove(4);
     list1->print();
 
-    LinkedList* novaLista;
+    LinkedList *novaLista;
     novaLista = list1->deep_copy();
     cout << "Lista original: ";
     list1->print();
     cout << "Lista copiada: ";
     novaLista->print();
+
+    LinkedList *novaListaConcat;
+    novaListaConcat = list1->concat(list2);
+    cout << "Lista 1: ";
+    list1->print();
+    cout << "Lista 2: ";
+    list2->print();
+    cout << "Lista concatenada: ";
+    novaListaConcat->print();
+
+    LinkedList* list4 = new LinkedList();
+    list4->push_back(1);
+    list4->push_back(3);
+    list4->push_back(4);
+    list4->push_back(8);
+    LinkedList *novaListaMerge;
+    novaListaMerge = list3->merge(list4);
+    cout << "Lista 1: ";
+    list3->print();
+    cout << "Lista 2: ";
+    list4->print();
+    cout << "Lista merged: ";
+    novaListaMerge->print();
     delete list1;
 }

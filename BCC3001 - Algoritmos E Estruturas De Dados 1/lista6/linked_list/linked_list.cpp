@@ -12,6 +12,16 @@ LinkedList::LinkedList()
 
 LinkedList::~LinkedList()
 {
+    Node *current = head;
+    Node *nextNode = nullptr;
+    while (current != nullptr)
+    {
+        nextNode = current->next; 
+        delete current;          
+        current = nextNode;       
+    }
+    head = nullptr; 
+    _size = 0;
 }
 
 void LinkedList::print()
@@ -287,6 +297,7 @@ LinkedList *LinkedList::deep_copy() // Ex14
     if (this->head == nullptr)
     {
         newLista->head = nullptr;
+        newLista->_size = 0;
         return newLista;
     }
 
@@ -305,15 +316,165 @@ LinkedList *LinkedList::deep_copy() // Ex14
         currentNew->next = newNode;
         currentNew = newNode;
     }
+    newLista->_size = this->_size;
     return newLista;
 }
 
-LinkedList *concat(LinkedList *list2) // Ex15
+LinkedList *LinkedList::concat(LinkedList *list2) // Ex15
 {
-    return nullptr;
+    LinkedList *newLista = new LinkedList();
+    LinkedList *parte2;
+    parte2 = list2->deep_copy();
+    if (this->head == nullptr)
+    {
+        newLista->head = parte2->head;
+        newLista->_size = parte2->_size;
+        return newLista;
+    }
+
+    Node *current = this->head;
+    Node *currentNew = new Node();
+    currentNew->key = current->key;
+    currentNew->next = nullptr;
+    newLista->head = currentNew;
+
+    while (current->next != nullptr)
+    {
+        current = current->next;
+        Node *newNode = new Node();
+        newNode->key = current->key;
+        newNode->next = nullptr;
+        currentNew->next = newNode;
+        currentNew = newNode;
+    }
+    currentNew->next = parte2->head;
+    newLista->_size = this->_size + parte2->_size;
+    return newLista;
 }
 
-LinkedList *merge(LinkedList *list2) // Ex16
+LinkedList *LinkedList::merge(LinkedList *list2) // Ex16
 {
-    return nullptr;
+
+    Node *list1Current = this->head;
+    Node *list2Current = list2->head;
+    LinkedList *newLista = new LinkedList();
+    if (list1Current == nullptr)
+    {
+        return list2->deep_copy();
+    }
+
+    if (list2Current == nullptr)
+    {
+        return this->deep_copy();
+    }
+
+    Node *currentNew;
+
+    if (list1Current->key < list2Current->key)
+    {
+        Node *newNode = new Node();
+        newNode->key = list1Current->key;
+        newNode->next = nullptr;
+        currentNew = newNode;
+        list1Current = list1Current->next;
+    }
+    else
+    {
+        Node *newNode = new Node();
+        newNode->key = list2Current->key;
+        newNode->next = nullptr;
+        currentNew = newNode;
+        list2Current = list2Current->next;
+    }
+    newLista->head = currentNew;
+
+    while (list1Current != nullptr && list2Current != nullptr)
+    {
+        if (list1Current->key < list2Current->key)
+        {
+            Node *newNode = new Node();
+            newNode->key = list1Current->key;
+            newNode->next = nullptr;
+            currentNew->next = newNode;
+            currentNew = newNode;
+            list1Current = list1Current->next;
+        }
+        else
+        {
+            Node *newNode = new Node();
+            newNode->key = list2Current->key;
+            newNode->next = nullptr;
+            currentNew->next = newNode;
+            currentNew = newNode;
+            list2Current = list2Current->next;
+        }
+    }
+    if (list1Current == nullptr)
+    {
+        while (list2Current != nullptr)
+        {
+            Node *newNode = new Node();
+            newNode->key = list2Current->key;
+            newNode->next = nullptr;
+            currentNew->next = newNode;
+            currentNew = newNode;
+            list2Current = list2Current->next;
+        }
+    }
+    if (list2Current == nullptr)
+    {
+        while (list1Current != nullptr)
+        {
+            Node *newNode = new Node();
+            newNode->key = list1Current->key;
+            newNode->next = nullptr;
+            currentNew->next = newNode;
+            currentNew = newNode;
+            list1Current = list1Current->next;
+        }
+    }
+    newLista->_size = this->_size + list2->_size;
+    return newLista;
+}
+
+LinkedList *LinkedList::mergePointerToPointer(LinkedList *list2)
+{
+    LinkedList *newLista = new LinkedList();
+
+    Node *list1Current = this->head;
+    Node *list2Current = list2->head;
+    Node **currentNew = &newLista->head; // Ponteiro para o ponteiro do próximo nó
+
+    while (list1Current != nullptr && list2Current != nullptr)
+    {
+        if (list1Current->key < list2Current->key)
+        {
+            *currentNew = new Node{list1Current->key, nullptr};
+            list1Current = list1Current->next;
+        }
+        else
+        {
+            *currentNew = new Node{list2Current->key, nullptr};
+            list2Current = list2Current->next;
+        }
+        currentNew = &((*currentNew)->next); // Avança para o próximo ponteiro
+    }
+
+    while (list1Current != nullptr)
+    {
+        *currentNew = new Node{list1Current->key, nullptr};
+        list1Current = list1Current->next;
+        currentNew = &((*currentNew)->next);
+    }
+
+    while (list2Current != nullptr)
+    {
+        *currentNew = new Node{list2Current->key, nullptr};
+        list2Current = list2Current->next;
+        currentNew = &((*currentNew)->next);
+    }
+
+    newLista->_size = this->_size + list2->_size;
+
+    return newLista;
 }
