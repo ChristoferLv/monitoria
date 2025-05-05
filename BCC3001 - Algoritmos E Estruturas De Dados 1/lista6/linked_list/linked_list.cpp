@@ -32,22 +32,23 @@ bool LinkedList::push_front(int key)
         return false;
     newNode->next = this->head;
     this->head = newNode;
+    this->_size = this->_size + 1;
     return true;
 }
 
-bool LinkedList::is_empty()
+bool LinkedList::is_empty() // Ex1
 {
     if (this->_size == 0)
         return true;
     return false;
 }
 
-int LinkedList::size()
+int LinkedList::size() // Ex2
 {
     return this->_size;
 }
 
-Node *LinkedList::find(int key)
+Node *LinkedList::find(int key) // Ex3
 {
     Node *current = this->head;
     while (current != nullptr)
@@ -61,22 +62,22 @@ Node *LinkedList::find(int key)
     return nullptr;
 }
 
-Node *LinkedList::get(int pos)
+Node *LinkedList::get(int pos) // Ex4
 {
-    if (pos >= this->_size)
+    if (pos >= this->_size || pos < 0)
         return nullptr;
     Node *current = this->head;
-    for (size_t i = 0; i < pos; i++)
+    for (int i = 0; i < pos; i++)
     {
-        current = head->next;
+        current = current->next;
     }
     return current;
 }
 
-void LinkedList::print_last()
+void LinkedList::print_last() // Ex5
 {
     Node *current = this->head;
-    if (current != nullptr)
+    if (current == nullptr)
         return;
     while (current->next != nullptr)
     {
@@ -85,7 +86,7 @@ void LinkedList::print_last()
     printf("Last = |%d|\n", current->key);
 }
 
-bool LinkedList::equals(LinkedList *other)
+bool LinkedList::equals(LinkedList *other) // Ex6
 {
     if (this->head == nullptr || other == nullptr || other->head == nullptr)
         return false;
@@ -123,21 +124,31 @@ bool LinkedList::is_sorted() // Ex7
     return true;
 }
 
-bool LinkedList::pop_front()
+bool LinkedList::pop_front() // Ex8
 {
     if (this->head == nullptr)
         return true;
+
+    if (this->_size == 1)
+    {
+        this->head->key = 0;
+        delete this->head;
+        this->head = nullptr;
+        this->_size = 0;
+        return true;
+    }
 
     Node *head = this->head;
     Node *newHead = this->head->next;
     this->head = newHead;
     head->key = 0;
     head->next = nullptr;
+    this->_size = this->_size - 1;
     delete head;
     return true;
 }
 
-bool LinkedList::push_back(int key)
+bool LinkedList::push_back(int key) // Ex9
 {
     Node *newNode = new Node();
     newNode->key = key;
@@ -153,6 +164,7 @@ bool LinkedList::push_back(int key)
         current = current->next;
     }
     current->next = newNode;
+    this->_size = this->_size + 1;
     return true;
 }
 
@@ -165,7 +177,7 @@ bool LinkedList::push_back(int n, int *vec) // Ex10
     {
         return true;
     }
-    for (size_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
         Node *tempPtr = new Node();
         tempPtr->key = vec[i];
@@ -179,66 +191,129 @@ bool LinkedList::push_back(int n, int *vec) // Ex10
         current = current->next;
     }
     current->next = mainNode->next;
+    this->_size = this->_size + n;
+    return true;
 }
 
-bool LinkedList::pop_back()
+bool LinkedList::pop_back() // Ex11
 {
     if (this->_size == 0)
     {
         return true;
     }
+    if (this->_size == 1)
+    {
+        this->head->key = 0;
+        this->head = nullptr;
+        delete this->head;
+        this->_size = 0;
+        return true;
+    }
     Node *current = this->head;
-    while (current->next != nullptr)
+    while (current->next != nullptr && current->next->next != nullptr)
     {
         current = current->next;
     }
-    delete current;
+    delete current->next;
+    current->next = nullptr;
     this->_size = this->_size - 1;
     return true;
 }
 
-bool insert_sorted(int key) // Ex13
+bool LinkedList::insert_sorted(int key) // Ex12
 {
-    
+    if (this->head == nullptr)
+    {
+        return this->push_front(key);
+    }
+
+    Node *current = this->head;
+
+    if (key < this->head->key)
+        return this->push_front(key);
+
+    while (current->next != nullptr)
+    {
+        if (current->next->key > key)
+        {
+            Node *newNode = new Node();
+            newNode->key = key;
+            newNode->next = current->next;
+            current->next = newNode;
+            this->_size = this->_size + 1;
+            return true;
+        }
+        current = current->next;
+    }
+    return this->push_back(key);
 }
 
-bool remove(int key) // Ex14
+bool LinkedList::remove(int key) // Ex13
 {
+    if (this->_size == 0)
+    {
+        return false;
+    }
+    Node *current = this->head;
+    if (current->key == key)
+    {
+        this->head = current->next;
+        this->_size = this->_size - 1;
+        current->key = 0;
+        current->next = nullptr;
+        delete current;
+        return true;
+    }
+    while (current->next != nullptr)
+    {
+        if (current->next->key == key)
+        {
+            Node *temp = current->next;
+            current->next = current->next->next;
+            temp->key = 0;
+            temp->next = nullptr;
+            delete temp;
+            this->_size = this->_size - 1;
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
 }
 
-LinkedList *deep_copy() // Ex14
+LinkedList *LinkedList::deep_copy() // Ex14
 {
+    LinkedList *newLista = new LinkedList();
+    if (this->head == nullptr)
+    {
+        newLista->head = nullptr;
+        return newLista;
+    }
+
+    Node *current = this->head;
+    Node *currentNew = new Node();
+    currentNew->key = current->key;
+    currentNew->next = nullptr;
+    newLista->head = currentNew;
+
+    while (current->next != nullptr)
+    {
+        current = current->next;
+        Node *newNode = new Node();
+        newNode->key = current->key;
+        newNode->next = nullptr;
+        currentNew->next = newNode;
+        currentNew = newNode;
+    }
+    return newLista;
 }
 
 LinkedList *concat(LinkedList *list2) // Ex15
 {
+    return nullptr;
 }
 
 LinkedList *merge(LinkedList *list2) // Ex16
 {
-}
-
-bool insert_after(int key, Node *pos)
-{
-    return true;
-}
-
-bool remove_after(Node *pos)
-{
-    return true;
-}
-
-bool insert(int pos)
-{
-    return true;
-}
-
-bool remove(int pos)
-{
-    return true;
-}
-
-bool remove(int key)
-{
-    return true;
+    return nullptr;
 }
