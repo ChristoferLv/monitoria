@@ -46,6 +46,9 @@
         "algorithm": "c",
         "stdio.h": "c",
         "functional": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdlib.h": "c",
+        "vector": "c",
+        "array": "c"
     }
 }
