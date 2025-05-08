@@ -77,16 +77,6 @@ typedef struct
         (dinText)->count = (dinText)->count + sizePlus;                                                 \
     } while (0);
 
-int save_string(const char *filepath, const char *text)
-{
-    FILE *pFile;
-    pFile = fopen(filepath, "w");
-    if (!pFile)
-        return 0;
-    fputs(text, pFile);
-    return 1;
-}
-
 char *get_content(const char *file_path)
 {                                       // Faz a leitura de conteúdo de texto de arquivo
     FILE *file = fopen(file_path, "r"); // para um vetor alocado em heap
@@ -140,6 +130,18 @@ char *get_content2(const char *file_path)
     }
     fclose(file);
     return str;
+}
+
+int replacechar(char *str, char orig, char rep)
+{
+    char *ix = str;
+    int n = 0;
+    while ((ix = strchr(ix, orig)) != NULL)
+    {
+        *ix++ = rep;
+        n++;
+    }
+    return n;
 }
 
 int is_delimiter(char c)
@@ -327,6 +329,7 @@ char **get_words(const char *filepath, int letters, size_t *numFounds)
             {
                 char *foundWord = malloc((letters + 1) * sizeof(char));
                 strcpy(foundWord, tok);
+                foundWord[letters] = '\0';
                 founds = founds + 1;
                 da_append_WordsArr(&arrWords, foundWord);
             }
@@ -337,6 +340,30 @@ char **get_words(const char *filepath, int letters, size_t *numFounds)
     return arrWords.words;
     free(texto);
     printf("\n");
+}
+
+typedef struct
+{
+    int id;
+    char name[51];
+    float price;
+} Product;
+
+int save_records(const char *filepath, int n, const Product *prods)
+{
+    FILE *pF = fopen(filepath, "w");
+    if (pF == NULL)
+        return 0;
+    for (size_t i = 0; i < n; i++)
+    {
+        char *tempName = malloc((strlen(prods[i].name) + 1) * sizeof(char));
+        strcpy(tempName, prods[i].name);
+        tempName[strlen(prods[i].name)] = '\0';
+        replacechar(tempName, ' ', '@');
+        fprintf(pF, "%d,%s,%f\n", prods[i].id, prods[i].name, prods[i].price);
+        free(tempName);
+    }
+    return 1;
 }
 
 int main()
@@ -361,6 +388,15 @@ int main()
         printf("|%s|\n", palavras[i]);
     }
     printf("\n");
+
+    Product products[] = {
+        {1, "Arroz", 10.5},
+        {4, "Leite", 5.67},
+        {7, "Iogurte", 12.70},
+        {12, "Chocolate", 3.50}};
+
+    int salvo = 0;
+    salvo = save_records("records.csv", 4, products);
 
     return 0;
 }
