@@ -17,6 +17,16 @@ void print_vector(vector<int> v)
     printf("]\n");
 }
 
+void print_vector(vector<string> v)
+{
+    printf("Vector = [ ");
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        cout << v[i] << " ";
+    }
+    printf("]\n");
+}
+
 // Suporte
 void printFwdList(forward_list<int> &fl)
 {
@@ -122,8 +132,8 @@ bool check_brackets(string expression)
     vector<char> closes = {')', ']', '}'};
     for (size_t i = 0; i < expression.size(); i++)
     {
-        printStack(temp);
-        // cout << expression[i] << "\n";
+        // printStack(temp);
+        //  cout << expression[i] << "\n";
         if (isdigit(expression[i]) || std::find(operations.begin(), operations.end(), expression[i]) != operations.end())
             continue;
         if (std::find(opens.begin(), opens.end(), expression[i]) != opens.end())
@@ -147,6 +157,105 @@ bool check_brackets(string expression)
     return temp.empty();
 }
 
+vector<string> vectorize_expression(string expression)
+{
+    vector<string> newVector;
+    string element = "";
+    size_t stringTam = expression.size();
+    for (size_t i = 0; i < stringTam; i++)
+    {
+        if (expression[i] == ' ')
+        {
+            newVector.push_back(element);
+            element = "";
+            continue;
+        }
+        element = element + expression[i];
+    }
+    if (!element.empty())
+    {
+        newVector.push_back(element);
+    }
+    return newVector;
+}
+
+bool isStrDigit(string val)
+{
+    for (char c : val)
+    {
+        if (!isdigit(c))
+            return false;
+    }
+    return true;
+}
+
+float calc_posfix(string expression)
+{
+    vector<char> operations = {'+', '-', '*', '/'};
+    vector<string> vecExp = vectorize_expression(expression);
+    stack<float> pilha;
+    float op1;
+    float op2;
+    for (size_t i = 0; i < vecExp.size(); i++)
+    {
+        if (isStrDigit(vecExp[i]))
+        {
+            pilha.push(stoi(vecExp[i]));
+        }
+        else
+        {
+            op2 = pilha.top();
+            pilha.pop();
+            op1 = pilha.top();
+            pilha.pop();
+            if (vecExp[i] == "+")
+            {
+                pilha.push(op1 + op2);
+            }
+            else if (vecExp[i] == "-")
+            {
+                pilha.push(op1 - op2);
+            }
+            else if (vecExp[i] == "*")
+            {
+                pilha.push(op1 * op2);
+            }
+            else if (vecExp[i] == "/")
+            {
+                pilha.push(op1 / op2);
+            }
+        }
+    }
+    return pilha.top();
+}
+
+bool check_posfix(string expression)
+{
+    vector<string> vecExp = vectorize_expression(expression);
+    stack<float> pilha;
+    for (size_t i = 0; i < vecExp.size(); i++)
+    {
+        if (isStrDigit(vecExp[i]))
+        {
+            pilha.push(stoi(vecExp[i]));
+        }
+        else
+        {
+            if (pilha.empty())
+                return false;
+            pilha.pop();
+        }
+    }
+    if (pilha.empty())
+        return false;
+    pilha.pop();
+    return pilha.empty();
+}
+
+float calc_infix(string expression)
+{
+}
+
 int main()
 {
     int arr1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -167,5 +276,15 @@ int main()
     string exp = "[(x + 8) * (9-2)]";
     bool valida = check_brackets(exp);
     cout << "A expressao e " << (valida ? "valida.\n" : "invalida.\n");
+
+    string exp2 = "24 32 + 2 / 41 5 * +";
+    vector<string> vectorized = vectorize_expression(exp2);
+    print_vector(vectorized);
+
+    float result = calc_posfix(exp2);
+    cout << "Resultado: " << result << "\n";
+
+    bool check = check_posfix(exp2);
+    cout << "Valido?: " << (check ? "Sim" : "Nao") << "\n";
     return 0;
 }
