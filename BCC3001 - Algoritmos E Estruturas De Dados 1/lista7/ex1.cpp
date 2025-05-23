@@ -39,11 +39,24 @@ void printFwdList(forward_list<int> &fl)
 // Suporte
 void printStack(stack<int> &stk)
 {
+    stack<int> temp = stk;
     printf("Stack = [ ");
-    while (!stk.empty())
+    while (!temp.empty())
     {
-        cout << stk.top() << " ";
-        stk.pop();
+        cout << temp.top() << " ";
+        temp.pop();
+    }
+    cout << "]\n";
+}
+
+void printStack(stack<float> &stk)
+{
+    stack<float> temp = stk;
+    printf("Stack = [ ");
+    while (!temp.empty())
+    {
+        cout << temp.top() << " ";
+        temp.pop();
     }
     cout << "]\n";
 }
@@ -254,6 +267,92 @@ bool check_posfix(string expression)
 
 float calc_infix(string expression)
 {
+    //"( ( ( 6 + 9 ) / 3 ) * ( 6 - 4 ) )"
+    vector<char> operations = {'+', '-', '*', '/'};
+    vector<string> vecExp = vectorize_expression(expression);
+    stack<float> operands;
+    stack<char> operators;
+    float op1;
+    float op2;
+    char top;
+    for (size_t i = 0; i < vecExp.size(); i++)
+    {
+        // cout<< "Processing: " << vecExp[i] << "\n";
+        // printStack(operands);
+        // printStack(operators);
+        if (isStrDigit(vecExp[i]))
+        {
+            operands.push(stof(vecExp[i]));
+        }
+        else if (vecExp[i] == "(")
+        {
+            operators.push(vecExp[i][0]);
+        }
+        else if (std::find(operations.begin(), operations.end(), vecExp[i][0]) != operations.end())
+        {
+            operators.push(vecExp[i][0]);
+        }
+        else
+        {
+            while (operators.top() != '(')
+            {
+                op2 = operands.top();
+                operands.pop();
+                op1 = operands.top();
+                operands.pop();
+                top = operators.top();
+                operators.pop();
+                if (top == '+')
+                {
+                    operands.push(op1 + op2);
+                }
+                else if (top == '-')
+                {
+                    operands.push(op1 - op2);
+                }
+                else if (top == '*')
+                {
+                    operands.push(op1 * op2);
+                }
+                else if (top == '/')
+                {
+                    operands.push(op1 / op2);
+                }
+            }
+            operators.pop();
+        }
+    }
+    return operands.top();
+}
+
+string concatenate(string str1, string str2, string str3)
+{
+    return "( " + str1 + " " + str2 + " " + str3 + " )";
+}
+
+string posfix_to_infix(string expression)
+{
+    vector<char> operations = {'+', '-', '*', '/'};
+    stack<string> pilha;
+    vector<string> vecExp = vectorize_expression(expression);
+    string op1;
+    string op2;
+    for (size_t i = 0; i < vecExp.size(); i++)
+    {
+        if (isStrDigit(vecExp[i]))
+        {
+            pilha.push(vecExp[i]);
+        }
+        else if (std::find(operations.begin(), operations.end(), vecExp[i][0]) != operations.end())
+        {
+            op2 = pilha.top();
+            pilha.pop();
+            op1 = pilha.top();
+            pilha.pop();
+            pilha.push(concatenate(op1, vecExp[i], op2));
+        }
+    }
+    return pilha.top();
 }
 
 int main()
@@ -286,5 +385,13 @@ int main()
 
     bool check = check_posfix(exp2);
     cout << "Valido?: " << (check ? "Sim" : "Nao") << "\n";
+
+    string exp3 = "( ( ( 6 + 9 ) / 3 ) * ( 6 - 4 ) )";
+    float result2 = calc_infix(exp3);
+    cout << "Resultado: " << result2 << "\n";
+
+    string exp4 = "24 32 + 2 / 41 5 * +";
+    string result3 = posfix_to_infix(exp4);
+    cout << exp4 << " -> |" << result3 << "|\n";
     return 0;
 }
