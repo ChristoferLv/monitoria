@@ -31,35 +31,20 @@ int *create_vector(int n) // Ex1
 int *get_largest(int n, int *v, int max) // Sem ordenar
 {
     int *maiores = calloc(max, sizeof(int));
-    int menor = 0;
-    int qtd = 0;
+    // int menor = 0;
+    maiores[0] = v[0];
+    maiores[1] = v[0];
     for (size_t i = 0; i < n; i++)
     {
-        if (v[i] > menor)
+        if (v[i] > maiores[0])
         {
-            for (int j = qtd; j >= 0; j--)
-            {
-                if (maiores[j] < v[i])
-                {
-                    if (j < max - 1)
-                    {
-                        maiores[j + 1] = maiores[j];
-                        maiores[j] = v[i];
-                    }
-                    else
-                    {
-                        maiores[j] = v[i];
-                    }
-                }
-            }
-            if (qtd < max)
-            {
-                qtd = qtd + 1;
-            }
-            if (v[i] < menor)
-            {
-                menor = v[i];
-            }
+            maiores[1] = maiores[0];
+            maiores[0] = v[i];
+            continue;
+        }
+        if (v[i] > maiores[1])
+        {
+            maiores[1] = v[i];
         }
     }
     return maiores;
@@ -234,13 +219,12 @@ int **transpose(int m, int n, int v[m][n])
 char **split(const char *str, int *n)
 {
     size_t idx = 0;
-    size_t numWords = 0;
-    size_t realStart = 0;
     size_t wordStart = INT_MAX;
     size_t wordEnd = 0;
     bool space = false;
 
-    char *palavras[10];
+    int capacity = 2;
+    char **palavras = malloc(capacity * sizeof(char *));
     size_t idxPalavra = 0;
     while (str[idx] == ' ')
     {
@@ -249,25 +233,34 @@ char **split(const char *str, int *n)
     }
     while (str[idx] != '\0')
     {
-        if (!space && str[idx] == ' ')
+        if (idxPalavra >= capacity)
         {
-            wordEnd = idx;
-            idx = idx + 1;
-            space = true;
+            capacity = capacity + 5;
+            palavras = realloc(palavras, capacity * sizeof(char *));
         }
+        
         if (space && str[idx] != ' ')
         {
             wordStart = idx;
             space = false;
         }
+        if (!space && str[idx] == ' ')
+        {
+            wordEnd = idx;
+            space = true;
+        }
         if (wordEnd > wordStart)
         {
-            char *newWord = malloc((wordEnd - wordStart) * sizeof(char));
+            char *newWord = malloc((wordEnd - wordStart + 1) * sizeof(char));
+            newWord[wordEnd - wordStart] = '\0';
+            memcpy(newWord, str+wordStart, wordEnd - wordStart);
             palavras[idxPalavra] = newWord;
             idxPalavra = idxPalavra + 1;
             wordStart = INT_MAX;
         }
+        idx = idx+1;
     }
+    *n = idxPalavra;
     return palavras;
 }
 
@@ -278,12 +271,12 @@ int main()
     free(v1);
 
     int v0[] = {6, 10, 2, 1, 2, 3, 9};
-    // int *v2 = get_largest(7, v0, 2); // retorna vetor com os 2 maiores valores de v0
-    // print_vector(2, v2);
-    //  int *v2_2 = get_largest_sort(7, v0, 2); // retorna vetor com os 2 maiores valores de v0
-    //  print_vector(2, v2_2);                  // imprime 10,9
-    // free(v2);
-    //  free(v2_2);
+    int *v2 = get_largest(7, v0, 2); // retorna vetor com os 2 maiores valores de v0
+    print_vector(2, v2);
+    int *v2_2 = get_largest_sort(7, v0, 2); // retorna vetor com os 2 maiores valores de v0
+    print_vector(2, v2_2);                  // imprime 10,9
+    free(v2);
+    free(v2_2);
 
     char umastring[] = "Texto123";
     char *copia = copy_string(umastring);
@@ -327,14 +320,14 @@ int main()
     print_vector2D(4, 3, vtransposta);
     free(vtransposta);
 
-    char str[] = " Texto de teste com várias palavras ";
+    char str[] = " Texto de teste com varias palavras ";
     int size = 0;
     char **tokens = split(str, &size); // devolve vetor de strings com as palavras
     for (int i = 0; i < size; i++)
-        printf("%s\n", tokens[i]); // imprime as palavras encontradas
-    // libera vetor de strings alocado na heap
-    for (int i = 0; i < size; i++)
-        free(tokens[i]);
-    free(tokens);
+        printf("|%s|\n", tokens[i]); // imprime as palavras encontradas
+    // // libera vetor de strings alocado na heap
+    // for (int i = 0; i < size; i++)
+    //     free(tokens[i]);
+    // free(tokens);
     return 0;
 }
