@@ -7,6 +7,21 @@
 // Suporte
 typedef struct
 {
+    int id;
+    char name[51];
+    float price;
+} Product;
+
+// Suporte
+typedef struct
+{
+    char key[101];
+    char value[101];
+} Pair;
+
+// Suporte
+typedef struct
+{
     char **words;
     size_t count;
     size_t capacity;
@@ -34,6 +49,52 @@ typedef struct
     size_t count;
     size_t capacity;
 } WordsCount;
+
+// Suporte
+typedef struct
+{
+    Product **products;
+    size_t count;
+    size_t capacity;
+} ProductsArr;
+
+// Suporte
+typedef struct
+{
+    Pair **pairs;
+    size_t count;
+    size_t capacity;
+} PairArr;
+
+#define da_append_Pair(arr, item)                                                          \
+    do                                                                                     \
+    {                                                                                      \
+        if ((arr)->count >= (arr)->capacity)                                               \
+        {                                                                                  \
+            if ((arr)->capacity == 0)                                                      \
+                (arr)->capacity = 10;                                                      \
+            else                                                                           \
+                (arr)->capacity += 10;                                                     \
+            (arr)->pairs = realloc((arr)->pairs, (arr)->capacity * sizeof(*(arr)->pairs)); \
+        }                                                                                  \
+                                                                                           \
+        (arr)->pairs[(arr)->count++] = (item);                                             \
+    } while (0);
+
+#define da_append_Prodcuts(arr, item)                                                               \
+    do                                                                                              \
+    {                                                                                               \
+        if ((arr)->count >= (arr)->capacity)                                                        \
+        {                                                                                           \
+            if ((arr)->capacity == 0)                                                               \
+                (arr)->capacity = 10;                                                               \
+            else                                                                                    \
+                (arr)->capacity += 10;                                                              \
+            (arr)->products = realloc((arr)->products, (arr)->capacity * sizeof(*(arr)->products)); \
+        }                                                                                           \
+                                                                                                    \
+        (arr)->products[(arr)->count++] = (item);                                                   \
+    } while (0);
 
 #define da_append_WordsArr(arr, item)                                                      \
     do                                                                                     \
@@ -104,17 +165,22 @@ char *get_content(const char *file_path)
     return str;
 }
 
-char *get_content2(const char *file_path)
+char *get_content2(const char *file_path, int complete)
 {                                       // Faz a leitura de conteúdo de texto de arquivo
     FILE *file = fopen(file_path, "r"); // para um vetor alocado em heap
     if (!file)
         return NULL;
     int str_size = 50;
     char *str = malloc(str_size * sizeof(char)); // aloca array de char para texto do arquivo
-    str[0] = ' ';                                // string vazia, com NULL na primeira posição
-    str[1] = '\0';                               // string vazia, com NULL na primeira posição
+    int buffer_counter = 0;
+    str[0] = '\0'; 
+    if (complete)
+    {
+        str[0] = ' ';
+        str[1] = '\0';
+        buffer_counter = 1;
+    }
     char buffer[20];
-    int buffer_counter = 1;
     while (fgets(buffer, 20, file) != NULL)
     { // lê trechos de 19 chars do arquivo
         buffer_counter += strlen(buffer);
@@ -149,9 +215,9 @@ int is_delimiter(char c)
     return c == ' ' || c == '\n' || c == '\t' || c == '\0' || ispunct(c);
 }
 
-int count_word(const char *filepath, const char *word)
+int count_word(const char *filepath, const char *word) // Ex1
 {
-    char *texto = get_content(filepath);
+    char *texto = get_content2(filepath, 0);
     int tamWord = strlen(word);
     int tamText = strlen(texto);
     int acc = 0;
@@ -171,12 +237,14 @@ int count_word(const char *filepath, const char *word)
             }
         }
     }
+    free(texto);
+    free(window);
     return acc;
 }
 
-int replace_word(const char *filepath, const char *old_str, const char *new_str)
+int replace_word(const char *filepath, const char *old_str, const char *new_str) // Ex2
 {
-    char *texto = get_content2(filepath);
+    char *texto = get_content2(filepath, 1);
     if (old_str == NULL || new_str == NULL || texto == NULL)
         return -1;
 
@@ -238,9 +306,9 @@ int replace_word(const char *filepath, const char *old_str, const char *new_str)
     return subs;
 }
 
-void report_by_chars(const char *filepath)
+void report_by_chars(const char *filepath) // Ex3
 {
-    char *texto = get_content(filepath);
+    char *texto = get_content2(filepath, 0);
     char *tok = strtok(texto, " \t\n,.!?;:\"()[]{}<>-");
     int quantidades[100] = {0};
     size_t tam = 0;
@@ -264,9 +332,9 @@ void report_by_chars(const char *filepath)
     printf("\n");
 }
 
-void count_all_words(const char *filepath)
+void count_all_words(const char *filepath) // Ex4
 {
-    char *texto = get_content(filepath);
+    char *texto = get_content2(filepath, 0);
     char *tok = strtok(texto, " \t\n,.!?;:\"()[]{}<>-");
     WordsCount wordsCount = {0};
     size_t i = 0;
@@ -307,9 +375,9 @@ void count_all_words(const char *filepath)
     printf("\n");
 }
 
-char **get_words(const char *filepath, int letters, size_t *numFounds)
+char **get_words(const char *filepath, int letters, size_t *numFounds) // Ex5
 {
-    char *texto = get_content(filepath);
+    char *texto = get_content2(filepath, 0);
     char *tok = strtok(texto, " \t\n,.!?;:\"()[]{}<>-");
     size_t founds = 0;
     ArrWords arrWords = {0};
@@ -337,19 +405,12 @@ char **get_words(const char *filepath, int letters, size_t *numFounds)
         tok = strtok(NULL, " \t\n,.!?;:\"()[]{}<>-");
     }
     *numFounds = founds;
-    return arrWords.words;
     free(texto);
     printf("\n");
+    return arrWords.words;
 }
 
-typedef struct
-{
-    int id;
-    char name[51];
-    float price;
-} Product;
-
-int save_records(const char *filepath, int n, const Product *prods)
+int save_records(const char *filepath, int n, const Product *prods) // Ex6
 {
     FILE *pF = fopen(filepath, "w");
     if (pF == NULL)
@@ -363,7 +424,86 @@ int save_records(const char *filepath, int n, const Product *prods)
         fprintf(pF, "%d,%s,%f\n", prods[i].id, prods[i].name, prods[i].price);
         free(tempName);
     }
+    fclose(pF);
     return 1;
+}
+
+Product **load_records(const char *filepath, int *n) // Ex7
+{
+    ProductsArr arrResult = {0};
+    FILE *pF = fopen(filepath, "r");
+    if (pF == NULL)
+    {
+        *n = 0;
+        return NULL;
+    }
+    char buffer[101];
+    int count = 0;
+    while (fgets(buffer, 100, pF) != NULL)
+    {
+        // printf("rodou\n");
+        Product *temp = malloc(sizeof(Product));
+        char *tok = strtok(buffer, ",");
+        temp->id = atoi(tok);
+        tok = strtok(NULL, ",");
+        replacechar(tok, '@', ' ');
+        strcpy(temp->name, tok);
+        tok = strtok(NULL, ",");
+        temp->price = atof(tok);
+        da_append_Prodcuts(&arrResult, temp);
+        count = count + 1;
+    }
+    *n = count;
+    fclose(pF);
+    return arrResult.products;
+}
+
+char *ltrim(char *s)
+{
+    while (isspace(*s))
+        s++;
+    return s;
+}
+
+char *rtrim(char *s)
+{
+    char *back = s + strlen(s);
+    while (isspace(*--back))
+        ;
+    *(back + 1) = '\0';
+    return s;
+}
+
+char *trim(char *s)
+{
+    return rtrim(ltrim(s));
+}
+
+Pair **load_ini_file(const char *filepath, int *n) // Ex8
+{
+    PairArr arrResult = {0};
+    FILE *pF = fopen(filepath, "r");
+    if (pF == NULL)
+    {
+        *n = 0;
+        return NULL;
+    }
+    char buffer[101];
+    int count = 0;
+    while (fgets(buffer, 100, pF) != NULL)
+    {
+        // printf("rodou\n");
+        Pair *temp = malloc(sizeof(Pair));
+        char *tok = strtok(buffer, "=");
+        strcpy(temp->key, trim(tok));
+        tok = strtok(NULL, "=");
+        strcpy(temp->value, trim(tok));
+        da_append_Pair(&arrResult, temp);
+        count = count + 1;
+    }
+    *n = count;
+    fclose(pF);
+    return arrResult.pairs;
 }
 
 int main()
@@ -383,9 +523,14 @@ int main()
 
     size_t numPalavras = 0;
     char **palavras = get_words("textS.txt", 3, &numPalavras);
-    for (size_t i = 0; i < numPalavras; i++)
-    {
-        printf("|%s|\n", palavras[i]);
+    if (palavras != NULL)
+    { // Verificar se palavras não é NULL antes de usar
+        for (size_t i = 0; i < numPalavras; i++)
+        {
+            printf("|%s|\n", palavras[i]);
+            free(palavras[i]); // Liberar cada palavra
+        }
+        free(palavras); // Liberar o array de palavras
     }
     printf("\n");
 
@@ -397,6 +542,38 @@ int main()
 
     int salvo = 0;
     salvo = save_records("records.csv", 4, products);
+    printf("Salvo? %d\n", salvo);
 
+    Product **produtos;
+    int count2 = 0;
+    produtos = load_records("records.csv", &count2);
+    if (produtos != NULL)
+    { // Verificar se produtos não é NULL antes de usar
+        for (int i = 0; i < count2; i++)
+        { // Iterar para imprimir e liberar todos os produtos
+            if (produtos[i] != NULL)
+            { // Verificar se o produto específico não é NULL
+                printf("ID: %d, Nome: |%s|, Preco: %.2f\n", produtos[i]->id, produtos[i]->name, produtos[i]->price);
+                free(produtos[i]); // Liberar cada produto
+            }
+        }
+        free(produtos); // Liberar o array de ponteiros de produtos
+    }
+
+    printf("\n");
+    int count3 = 0;
+    Pair **pairs = load_ini_file("teste.ini", &count3);
+    if (pairs != NULL)
+    { // Verificar se produtos não é NULL antes de usar
+        for (int i = 0; i < count3; i++)
+        { // Iterar para imprimir e liberar todos os produtos
+            if (pairs[i] != NULL)
+            { // Verificar se o produto específico não é NULL
+                printf("\"%s\" = \"%s\"\n", pairs[i]->key, pairs[i]->value);
+                free(pairs[i]); // Liberar cada produto
+            }
+        }
+        free(pairs); // Liberar o array de ponteiros de produtos
+    }
     return 0;
 }
