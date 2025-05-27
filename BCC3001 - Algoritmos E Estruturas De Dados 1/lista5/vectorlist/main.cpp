@@ -6,7 +6,7 @@
 int main()
 {
     VectorList *list = new VectorList();
-    
+
     int arr[] = {3, 4};
     int n = 2;
     VectorList *list2 = new VectorList();
@@ -68,7 +68,15 @@ int main()
     list_clear(list);
     list->print();
 
+    std::cout << "Concatenando listas\n";
+    list->push_back(7);
+    list->push_back(8);
+    list->push_back(9);
+    list->print();
+    list2->print();
+    int concatenados = list_concat(list, list2);
 
-
+    list->print();
+    std::cout << "Concatenados: " << concatenados << "\n";
     return 0;
 }

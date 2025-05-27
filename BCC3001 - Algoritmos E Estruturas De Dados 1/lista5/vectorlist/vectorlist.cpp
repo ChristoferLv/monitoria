@@ -232,4 +232,10 @@ VectorList *list_copy(VectorList *list)
 
 int list_concat(VectorList *list1, VectorList *list2)
 {
+    int qtd = list1->capacity - list1->size;
+    for (size_t i = 0; i < qtd && i < list2->size; i++)
+    {
+        list1->push_back(list2->data[i]);
+    }
+    return qtd - (list1->capacity - list1->size);
 }
