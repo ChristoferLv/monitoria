@@ -59,6 +59,7 @@
         "numeric": "cpp",
         "random": "cpp",
         "string": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "stdbool.h": "c"
     }
 }

@@ -61,7 +61,7 @@ int *get_largest_sort(int n, int *v, int max) // Ordenando
     return maiores;
 }
 
-char *copy_string(const char *str)
+char *copy_string(const char *str) // Ex3
 {
     size_t tamanho = strlen(str);
     char *newString = malloc((tamanho + 1) * sizeof(char));
@@ -73,7 +73,7 @@ char *copy_string(const char *str)
     return newString;
 }
 
-char *copy_reverse(const char *str)
+char *copy_reverse(const char *str) // Ex4
 {
     size_t tamanho = strlen(str);
     char *newString = malloc((tamanho + 1) * sizeof(char));
@@ -85,7 +85,7 @@ char *copy_reverse(const char *str)
     return newString;
 }
 
-char *concat_string(const char *str1, const char *str2)
+char *concat_string(const char *str1, const char *str2) // Ex5
 {
     size_t tam1 = strlen(str1);
     size_t tam2 = strlen(str2);
@@ -103,7 +103,7 @@ char *concat_string(const char *str1, const char *str2)
     return newString;
 }
 
-int *array_union(int n1, const int *v1, int n2, const int *v2, int *newTam)
+int *array_union(int n1, const int *v1, int n2, const int *v2, int *newTam) // Ex6
 {
     bool found = 0;
     size_t index = 0;
@@ -139,7 +139,7 @@ int *array_union(int n1, const int *v1, int n2, const int *v2, int *newTam)
     return uni;
 }
 
-int *array_intersection(int n1, const int *v1, int n2, const int *v2, int *newTam)
+int *array_intersection(int n1, const int *v1, int n2, const int *v2, int *newTam) // Ex7
 {
     size_t index = 0;
     int *indexer = NULL;
@@ -172,7 +172,7 @@ int *array_intersection(int n1, const int *v1, int n2, const int *v2, int *newTa
     return inter;
 }
 
-int **create_vector2D(int m, int n)
+int **create_vector2D(int m, int n) // Ex9
 {
     size_t count = 0;
     int **linhas = malloc(m * sizeof(int *));
@@ -188,7 +188,7 @@ int **create_vector2D(int m, int n)
     return linhas;
 }
 
-void print_vector2D(int m, int n, int **v)
+void print_vector2D(int m, int n, int **v) // Ex8
 {
     printf("\n");
     for (size_t i = 0; i < m; i++)
@@ -203,7 +203,7 @@ void print_vector2D(int m, int n, int **v)
     printf("\n");
 }
 
-int **transpose(int m, int n, int v[m][n])
+int **transpose(int m, int n, int v[m][n]) // Ex10
 {
     int **newMat = create_vector2D(n, m);
     for (size_t i = 0; i < m; i++)
@@ -216,7 +216,7 @@ int **transpose(int m, int n, int v[m][n])
     return newMat;
 }
 
-char **split(const char *str, int *n)
+char **split(const char *str, int *n) // Ex11
 {
     size_t idx = 0;
     size_t wordStart = INT_MAX;

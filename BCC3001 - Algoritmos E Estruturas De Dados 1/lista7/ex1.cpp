@@ -49,6 +49,7 @@ void printStack(stack<int> &stk)
     cout << "]\n";
 }
 
+// Suporte
 void printStack(stack<float> &stk)
 {
     stack<float> temp = stk;
@@ -74,7 +75,7 @@ void printStack(stack<char> &stk)
     cout << "|  \n";
 }
 
-vector<int> vet_to_vector(int *v, int n)
+vector<int> vet_to_vector(int *v, int n) // Ex1
 {
     vector<int> temp;
     for (int i = 0; i < n; i++)
@@ -84,7 +85,7 @@ vector<int> vet_to_vector(int *v, int n)
     return temp;
 }
 
-forward_list<int> vet_to_flist(int *v, int n)
+forward_list<int> vet_to_flist(int *v, int n) // Ex2
 {
     forward_list<int> temp;
     auto it = temp.before_begin(); // Usar quando a lista esta vazia
@@ -96,7 +97,7 @@ forward_list<int> vet_to_flist(int *v, int n)
     return temp;
 }
 
-stack<int> vet_to_stack(int *v, int n)
+stack<int> vet_to_stack(int *v, int n) // Ex3
 {
     stack<int> temp;
     for (int i = n - 1; i >= 0; i--)
@@ -106,7 +107,7 @@ stack<int> vet_to_stack(int *v, int n)
     return temp;
 }
 
-vector<int> list_concat(forward_list<int> &list1, forward_list<int> &list2)
+vector<int> list_concat(forward_list<int> &list1, forward_list<int> &list2) // Ex4
 {
     vector<int> temp;
     auto it = list1.begin();
@@ -135,7 +136,7 @@ int indexOf(vector<char> v, char item)
     return -1;
 }
 
-bool check_brackets(string expression)
+bool check_brackets(string expression) // Ex5
 {
     char item;
     int index = -1;
@@ -170,7 +171,7 @@ bool check_brackets(string expression)
     return temp.empty();
 }
 
-vector<string> vectorize_expression(string expression)
+vector<string> vectorize_expression(string expression) // Ex6
 {
     vector<string> newVector;
     string element = "";
@@ -202,7 +203,7 @@ bool isStrDigit(string val)
     return true;
 }
 
-float calc_posfix(string expression)
+float calc_posfix(string expression) // Ex7
 {
     vector<char> operations = {'+', '-', '*', '/'};
     vector<string> vecExp = vectorize_expression(expression);
@@ -242,7 +243,7 @@ float calc_posfix(string expression)
     return pilha.top();
 }
 
-bool check_posfix(string expression)
+bool check_posfix(string expression) // Ex8
 {
     vector<string> vecExp = vectorize_expression(expression);
     stack<float> pilha;
@@ -265,7 +266,7 @@ bool check_posfix(string expression)
     return pilha.empty();
 }
 
-float calc_infix(string expression)
+float calc_infix(string expression) // Ex9
 {
     //"( ( ( 6 + 9 ) / 3 ) * ( 6 - 4 ) )"
     vector<char> operations = {'+', '-', '*', '/'};

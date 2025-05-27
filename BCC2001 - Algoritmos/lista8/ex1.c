@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include <stdbool.h>
+#include <time.h>
 
 struct point
 {
@@ -130,7 +132,7 @@ void print_best3(int n, Employee v[n]) // Ex8
     printf("1: %s, 2: %s, 3: %s\n", v[best1].name, v[best2].name, v[best3].name);
 }
 
-void income_report(int n, Employee v[n])
+void income_report(int n, Employee v[n]) // Ex9
 {
     char types[][50] = {"Developer", "Designer", "Manager"};
     float total = 0;
@@ -290,7 +292,7 @@ void createEmail(char email[], char name[])
 
 Contact create_contact(int id, char name[], int type) // Ex11
 {
-    printf("------EX11-----\n");
+    //printf("------EX11-----\n");
     Contact newContact;
     newContact.id = id;
     newContact.type = type;
@@ -298,6 +300,57 @@ Contact create_contact(int id, char name[], int type) // Ex11
     fix_name(newContact.name);
     createEmail(newContact.email, newContact.name);
     return newContact;
+}
+
+bool check_name(char *name, char *nameCmp)
+{
+    // Para evitar modificar a string original, trabalhamos com uma cópia
+    char temp_name[51]; // Assumindo que o nome não excederá 50 caracteres + nulo
+    strncpy(temp_name, name, sizeof(temp_name) - 1);
+    temp_name[sizeof(temp_name) - 1] = '\0';
+
+    char *tok = strtok(temp_name, " ");
+    while (tok != NULL)
+    {
+        if (strcmp(tok,nameCmp) == 0)
+            return true;
+        tok = strtok(NULL, " ");
+    }
+    return false;
+}
+
+void fill_contact_list(int n, Contact list[n], char names[][18]) // Ex12
+{
+    srand(time(NULL));
+    int id = 1;
+    int type = 0;
+    for (size_t i = 0; i < n; i++)
+    {
+        if (check_name(names[i], "Doe"))
+            type = 0;
+        else
+        {
+            type = rand() % 4 + 1;
+        }
+        list[i] = create_contact(id, names[i], type);
+        id = id + 1;
+    }
+}
+
+int find_by_name(int n1, Contact list[n1], int n2, char names[n2][10]) // Ex13
+{
+    int count = 0;
+    for (size_t i = 0; i < n1; i++)
+    {
+        for (size_t j = 0; j < n2; j++)
+        {
+            if (check_name(list[i].name, names[j]))
+            {
+                count = count + 1;
+            }
+        }
+    }
+    return count;
 }
 
 int main()
@@ -348,6 +401,21 @@ int main()
     printf("Ex10|%s|\n", name);
 
     Contact c2 = create_contact(4, " JoHn! Do5e3 SILVA", 1);
-    printf("Created Contact: %d, %s, %s, %d", c2.id, c2.name, c2.email, c2.type);
+    printf("Created Contact: %d, %s, %s, %d\n", c2.id, c2.name, c2.email, c2.type);
+
+    char names[][18] = {"John Doe", "Marcio Marcus", "Lui Vit", "Mantus Doe", "John Tordesilhas", "Steve Linux", "Steve Notebook"};
+    Contact list3[7];
+    fill_contact_list(7, list3, names);
+    for (size_t i = 0; i < 7; i++)
+    {
+        printf("Contact: %d, %s, %s, %d\n", list3[i].id, list3[i].name, list3[i].email, list3[i].type);
+    }
+    printf("\n");
+
+    char names2[5][10] = {"joanna", "John", "mike", "leonor", "Doe"};
+    // a chamada abaixo contará os nomes em “list” que contêm ao menos
+    // uma das palavras em “names”.
+    int count = find_by_name(7, list3, 5, names2);
+    printf("Contatos encontrados: %d\n", count);
     return 0;
 }
