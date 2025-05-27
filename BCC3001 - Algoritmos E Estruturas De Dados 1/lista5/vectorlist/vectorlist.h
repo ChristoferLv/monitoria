@@ -27,6 +27,6 @@ void list_reverse(VectorList* list); //10
 int list_equal(VectorList* list1, VectorList* list2); //11
 VectorList* list_from_vector(int n, int* vet); //12
 VectorList* list_copy(VectorList* list); //13
-int list_concat(VectorList* list1, ListSet* list2); //14
+int list_concat(VectorList* list1, VectorList* list2); //14
 
 #endif

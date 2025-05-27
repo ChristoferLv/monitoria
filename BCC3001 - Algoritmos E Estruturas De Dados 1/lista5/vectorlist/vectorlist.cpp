@@ -229,3 +229,7 @@ VectorList *list_copy(VectorList *list)
 
     return copyList;
 }
+
+int list_concat(VectorList *list1, VectorList *list2)
+{
+}
